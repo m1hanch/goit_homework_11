@@ -9,10 +9,7 @@ class Field:
 
 class Phone(Field):
     def __init__(self, phone: str):
-        if len(phone) == 10 and phone.isdigit():
-            self.__value = phone
-        else:
-            raise ValueError("Incorrect phone number! It must contain exactly 10 numbers.")
+        self.__value = phone
 
     @property
     def phone(self):
@@ -28,10 +25,7 @@ class Phone(Field):
 
 class Name(Field):
     def __init__(self, name: str):
-        if name.isalpha():
-            self.__value = name.capitalize()
-        else:
-            raise ValueError('Name can contain only letters!')
+        self.__value = name.capitalize()
 
     @property
     def name(self):
@@ -121,7 +115,5 @@ class AddressBook(UserDict):
         iter_list = list(self.data.items())
         grouped = [iter_list[n:n+self.N] for n in range(0, len(iter_list),self.N)]
         return (group for group in grouped)
-
-
 
 
