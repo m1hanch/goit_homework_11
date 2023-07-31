@@ -9,7 +9,8 @@ class Field:
 
 class Phone(Field):
     def __init__(self, phone: str):
-        self.__value = phone
+        self.__value = None
+        self.phone = phone
 
     @property
     def phone(self):
@@ -25,7 +26,8 @@ class Phone(Field):
 
 class Name(Field):
     def __init__(self, name: str):
-        self.__value = name.capitalize()
+        self.__value = None
+        self.name = name.capitalize()
 
     @property
     def name(self):
@@ -115,5 +117,3 @@ class AddressBook(UserDict):
         iter_list = list(self.data.items())
         grouped = [iter_list[n:n+self.N] for n in range(0, len(iter_list),self.N)]
         return (group for group in grouped)
-
-
