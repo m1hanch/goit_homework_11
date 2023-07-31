@@ -23,6 +23,9 @@ class Phone(Field):
         else:
             raise ValueError("Incorrect phone number! It must contain exactly 10 numbers.")
 
+    def __str__(self):
+        return self.phone
+
 
 class Name(Field):
     def __init__(self, name: str):
