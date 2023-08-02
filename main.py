@@ -44,28 +44,35 @@ class Name(Field):
             raise ValueError('Name can contain only letters!')
 
 
-class Birthday:
+class Birthday(Field):
     def __init__(self, birthday: str):
-        #Перевірка правильності формату дати
+        self.__value = None
+        self.birthday = birthday
+
+    @property
+    def birthday(self):
+        return self.__value
+
+    @birthday.setter
+    def birthday(self, new_bday: str):
         try:
-            bday = datetime.strptime(birthday, '%d.%m.%Y')
+            bday = datetime.strptime(new_bday, '%d.%m.%Y')
         except ValueError:
             print('Wrong date format! Please provide correct form dd.mm.yyyy')
             quit()
-
         #Перевірка реальності дати
-        if bday.date() > datetime.now().date() or bday.year <= bday.year - 120:
+        if bday.date() > datetime.now().date() or bday.year <= datetime.now().year - 120:
             print('Unrealistic date! Provide the real one.')
             quit()
         else:
-            self.birthday = birthday
+            self.__value = new_bday
 
 
 class Record:
     def __init__(self, name: Name, *phone: Phone, birthday = None):
         if len(phone) == 0:
             phone = []
-        self.Name = name
+        self.name = name
         self.phones = list(phone)
         self.bday = birthday
 
@@ -116,7 +123,44 @@ class AddressBook(UserDict):
     def remove_contact(self, name: str):
         self.data.pop(name.capitalize())
 
-    def __iter__(self):
+    def __iter__(self, n = None):
+        if n:
+            self.N = n
         iter_list = list(self.data.items())
         grouped = [iter_list[n:n+self.N] for n in range(0, len(iter_list),self.N)]
-        return (group for group in grouped)
+        for group in grouped:
+            yield group
+
+
+
+if __name__ == "__main__":
+    name = Name('Bill')
+    phone = Phone('1234567890')
+    rec = Record(name, phone)
+    name = Name('Billq')
+    phone = Phone('1234567891')
+    rec1 = Record(name, phone)
+    name = Name('Billw')
+    phone = Phone('1234567892')
+    rec2 = Record(name, phone)
+    name = Name('Bille')
+    phone = Phone('1234567893')
+    rec3 = Record(name, phone)
+    rec4 = Record(Name('Billr'), Phone('1234567894'))
+    ab = AddressBook()
+    ab.add_record(rec)
+    ab.add_record(rec1)
+    ab.add_record(rec2)
+    ab.add_record(rec3)
+    ab.add_record(rec4)
+    assert isinstance(ab['Bill'], Record)
+    assert isinstance(ab['Bill'].name, Name)
+    assert isinstance(ab['Bill'].phones, list)
+    assert isinstance(ab['Bill'].phones[0], Phone)
+    assert ab['Bill'].phones[0].phone == '1234567890'
+    print('All Ok)')
+    print(ab.list_contacts())
+    ab_iter = ab.__iter__(2)
+    print(next(ab_iter))
+    print(next(ab_iter))
+    print(next(ab_iter))
